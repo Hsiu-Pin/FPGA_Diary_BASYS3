@@ -1,3 +1,7 @@
+/******************************************************************************
+* Author: Hsiu-Pin Hsu
+* Date: 2024.08.10
+******************************************************************************/
 
 // ====================================================================
 // - init_platform()
@@ -90,7 +94,6 @@
 
 int main()
 {
-    init_platform();
 
 	XGpio_Config *cfg_ptr;
 
@@ -102,36 +105,37 @@ int main()
 	u32 btn_data;
 	u32 led_data;
  
+	init_platform();
 	xil_printf("Entered function main\r\n");
 
   // Initialize LED Device
 	cfg_ptr = XGpio_LookupConfig(LED_ID);
 	XGpio_CfgInitialize(&led_device, cfg_ptr, cfg_ptr->BaseAddress);
- 
+	
 	// Initialize Button Device
 	cfg_ptr = XGpio_LookupConfig(BTN_ID);
 	XGpio_CfgInitialize(&btn_device, cfg_ptr, cfg_ptr->BaseAddress);
-
+	
 	// Initialize Switch Device
 	cfg_ptr = XGpio_LookupConfig(SWT_ID);
 	XGpio_CfgInitialize(&swt_device, cfg_ptr, cfg_ptr->BaseAddress);
- 
+	
 	// Set Tristate
 	XGpio_SetDataDirection(&btn_device, 1, 0b1111); // 4-bit bottons
 	XGpio_SetDataDirection(&led_device, 1, 0b1111111111111111); // 16-bit LEDs
 	XGpio_SetDataDirection(&swt_device, 1, 0b1111111111111111); // 16-bit Switches
-
+	
 	while (1) {
-        swt_data = XGpio_DiscreteRead(&swt_device, SWT_CHANNEL);
-        btn_data = XGpio_DiscreteRead(&btn_device, BTN_CHANNEL);
-        if(btn_data!=0){
-            led_data = swt_data;
-        }else{
-            led_data = 0b0000000000000000;
-        }
-        XGpio_DiscreteWrite(&led_device, LED_CHANNEL, led_data);
+		swt_data = XGpio_DiscreteRead(&swt_device, SWT_CHANNEL);
+		btn_data = XGpio_DiscreteRead(&btn_device, BTN_CHANNEL);
+		if(btn_data!=0){
+			led_data = swt_data;
+		}else{
+			led_data = 0b0000000000000000;
+		}
+		XGpio_DiscreteWrite(&led_device, LED_CHANNEL, led_data);
 	}
 
-  cleanup_platform();
-  return 0;
+	cleanup_platform();
+	return 0;
 }
