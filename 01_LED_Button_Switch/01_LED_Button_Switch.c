@@ -53,14 +53,14 @@ int main()
 	XGpio_SetDataDirection(&swt_device, 1, 0b1111111111111111); // 16-bit Switches
 	
 	while (1) {
-		swt_data = XGpio_DiscreteRead(&swt_device, SWT_CHANNEL);
-		btn_data = XGpio_DiscreteRead(&btn_device, BTN_CHANNEL);
+		swt_data = XGpio_DiscreteRead(&swt_device, 1);
+		btn_data = XGpio_DiscreteRead(&btn_device, 1);
 		if(btn_data!=0){
 			led_data = swt_data;
 		}else{
 			led_data = 0b0000000000000000;
 		}
-		XGpio_DiscreteWrite(&led_device, LED_CHANNEL, led_data);
+		XGpio_DiscreteWrite(&led_device, 1, led_data);
 	}
 
 	cleanup_platform();
