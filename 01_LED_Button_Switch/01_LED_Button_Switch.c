@@ -13,11 +13,11 @@
 
 // Defined in xparameters.h
 // GPIO 0
-#define SWT_ID XPAR_AXI_GPIO_SWITCHES_BASEADDR
+#define SWT_BA XPAR_AXI_GPIO_SWITCHES_BASEADDR
 // GPIO 1
-#define BTN_ID XPAR_AXI_GPIO_BUTTONS_BASEADDR
+#define BTN_BA XPAR_AXI_GPIO_BUTTONS_BASEADDR
 // GPIO 2
-#define LED_ID XPAR_AXI_GPIO_LEDS_BASEADDR
+#define LED_BA XPAR_AXI_GPIO_LEDS_BASEADDR
 
 int main()
 {
@@ -35,22 +35,22 @@ int main()
 	init_platform();
 	xil_printf("Entered function main\r\n");
 
-	// Initialize LED Device
-	cfg_ptr = XGpio_LookupConfig(LED_ID);
+	// Initialize Switch
+	cfg_ptr = XGpio_LookupConfig(SWT_BA);
+	XGpio_CfgInitialize(&swt_device, cfg_ptr, cfg_ptr->BaseAddress);
+
+	// Initialize Button
+	cfg_ptr = XGpio_LookupConfig(BTN_BA);
+	XGpio_CfgInitialize(&btn_device, cfg_ptr, cfg_ptr->BaseAddress);
+
+	// Initialize LED
+	cfg_ptr = XGpio_LookupConfig(LED_BA);
 	XGpio_CfgInitialize(&led_device, cfg_ptr, cfg_ptr->BaseAddress);
 	
-	// Initialize Button Device
-	cfg_ptr = XGpio_LookupConfig(BTN_ID);
-	XGpio_CfgInitialize(&btn_device, cfg_ptr, cfg_ptr->BaseAddress);
-	
-	// Initialize Switch Device
-	cfg_ptr = XGpio_LookupConfig(SWT_ID);
-	XGpio_CfgInitialize(&swt_device, cfg_ptr, cfg_ptr->BaseAddress);
-	
-	// Set Tristate
-	XGpio_SetDataDirection(&btn_device, 1, 0b1111); // 4-bit buttons
-	XGpio_SetDataDirection(&led_device, 1, 0b1111111111111111); // 16-bit LEDs
-	XGpio_SetDataDirection(&swt_device, 1, 0b1111111111111111); // 16-bit Switches
+	// Set data direction
+	XGpio_SetDataDirection(&btn_device, 1, 0x0000000F); // 4-bit buttons
+	XGpio_SetDataDirection(&led_device, 1, 0x0000FFFF); // 16-bit LEDs
+	XGpio_SetDataDirection(&swt_device, 1, 0x0000FFFF); // 16-bit Switches
 	
 	while (1) {
 		swt_data = XGpio_DiscreteRead(&swt_device, 1);
@@ -58,7 +58,7 @@ int main()
 		if(btn_data!=0){
 			led_data = swt_data;
 		}else{
-			led_data = 0b0000000000000000;
+			led_data = 0x00000000;
 		}
 		XGpio_DiscreteWrite(&led_device, 1, led_data);
 	}
