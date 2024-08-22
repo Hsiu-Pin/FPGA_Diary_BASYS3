@@ -17,8 +17,7 @@ int main()
 {
     init_platform();
 
-    print("Hello World\n\r");
-    print("Successfully ran Hello World application\n\r");
+    print("Program Start !!!\n\r \n\r");
 
     // Anodes Mask
     Xil_Out32(XPAR_DISPLAYCONTROL_0_BASEADDR, 0x0000000F);
@@ -30,16 +29,15 @@ int main()
 
     while(1){
         digit = XUartLite_RecvByte(XPAR_XUARTLITE_0_BASEADDR);
-        digit = digit-48;
+        digit = digit-48; // ASCII -> Int
         if(digit > 9 || digit < 0){
-            Xil_Out32(XPAR_DISPLAYCONTROL_0_BASEADDR+4, 0x00000000);
-            xil_printf("Current 4-digit are = %d%d%d%d\n\r", 
-            data>>24, (data>>16)&0x000F, (data>>8)&0x000F, (data)&0x000F);
+            xil_printf("\n\r");
             data = 0;
         } else {
+            xil_printf("%d", digit);
             data = (data<<8) + digit;
-            Xil_Out32(XPAR_DISPLAYCONTROL_0_BASEADDR+4, data);
         };
+        Xil_Out32(XPAR_DISPLAYCONTROL_0_BASEADDR+4, data);
     }
 
     cleanup_platform();
