@@ -17,7 +17,7 @@ int main()
 {
     init_platform();
 
-    //print("Program Start !!!\n\r \n\r");
+    print("Program Start !!!\n\r \n\r");
 
     // Anodes Mask
     Xil_Out32(XPAR_CALCULATORCONTROL_0_BASEADDR, 0x0000000F);
@@ -26,15 +26,15 @@ int main()
     Xil_Out32(XPAR_CALCULATORCONTROL_0_BASEADDR+4, 0x00000000);
 
     
-    Xil_Out32(XPAR_CALCULATORCONTROL_0_BASEADDR+4, 0x01020304);
+    /*Xil_Out32(XPAR_CALCULATORCONTROL_0_BASEADDR+4, 0x01020304);
     Xil_Out32(XPAR_CALCULATORCONTROL_0_BASEADDR+8, 0x00000002);
     Xil_Out32(XPAR_CALCULATORCONTROL_0_BASEADDR+4, 0x05060708);
     Xil_Out32(XPAR_CALCULATORCONTROL_0_BASEADDR+8, 0x00000001);
-    Xil_Out32(XPAR_CALCULATORCONTROL_0_BASEADDR+8, 0x00000006);
+    Xil_Out32(XPAR_CALCULATORCONTROL_0_BASEADDR+8, 0x00000006);*/
 
     //data = 0;
 
-    /*while(1){
+    while(1){
         digit = XUartLite_RecvByte(XPAR_XUARTLITE_0_BASEADDR);
         if(digit <=57 && digit >= 48) {// number 0~9
             digit = digit-48; // ASCII -> Decimal
@@ -58,10 +58,11 @@ int main()
             xil_printf("/");
         } else if (digit == 27) { // ESC
             Xil_Out32(XPAR_CALCULATORCONTROL_0_BASEADDR+8, 0x00000006);
+            Xil_Out32(XPAR_CALCULATORCONTROL_0_BASEADDR+4, 0x00000000);
             xil_printf("---- ESC ---- \n\r");
         }
     }
-*/
+
     cleanup_platform();
     return 0;
 }
