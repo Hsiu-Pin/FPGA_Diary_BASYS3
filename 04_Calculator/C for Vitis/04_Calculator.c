@@ -10,6 +10,10 @@
 #include "xil_types.h"
 #include "xil_io.h"
 
+#define REG0 XPAR_CALCULATORCONTROL_0_BASEADDR
+#define REG1 XPAR_CALCULATORCONTROL_0_BASEADDR+4
+#define REG2 XPAR_CALCULATORCONTROL_0_BASEADDR+8
+
 u32 digit;
 u32 data;
 
@@ -20,19 +24,12 @@ int main()
     print("Program Start !!!\n\r \n\r");
 
     // Anodes Mask
-    Xil_Out32(XPAR_CALCULATORCONTROL_0_BASEADDR, 0x0000000F);
+    Xil_Out32(REG0, 0x0000000F);
 
     // Initial Value
-    Xil_Out32(XPAR_CALCULATORCONTROL_0_BASEADDR+4, 0x00000000);
+    Xil_Out32(REG1, 0x00000000);
 
-    
-    /*Xil_Out32(XPAR_CALCULATORCONTROL_0_BASEADDR+4, 0x01020304);
-    Xil_Out32(XPAR_CALCULATORCONTROL_0_BASEADDR+8, 0x00000002);
-    Xil_Out32(XPAR_CALCULATORCONTROL_0_BASEADDR+4, 0x05060708);
-    Xil_Out32(XPAR_CALCULATORCONTROL_0_BASEADDR+8, 0x00000001);
-    Xil_Out32(XPAR_CALCULATORCONTROL_0_BASEADDR+8, 0x00000006);*/
-
-    //data = 0;
+    data = 0;
 
     while(1){
         digit = XUartLite_RecvByte(XPAR_XUARTLITE_0_BASEADDR);
@@ -40,25 +37,30 @@ int main()
             digit = digit-48; // ASCII -> Decimal
             xil_printf("%d", digit);
             data = (data<<8) + digit;
-            Xil_Out32(XPAR_CALCULATORCONTROL_0_BASEADDR+4, data);
+            Xil_Out32(REG1, data);
         } else if (digit == 13) { // Enter
-            Xil_Out32(XPAR_CALCULATORCONTROL_0_BASEADDR+8, 0x00000001);
+            Xil_Out32(REG2, 0x00000001);
             xil_printf(" Enter \n\r");
         } else if (digit == 43) { // +
-            Xil_Out32(XPAR_CALCULATORCONTROL_0_BASEADDR+8, 0x00000002);
+            data = 0;
+            Xil_Out32(REG2, 0x00000002);
             xil_printf("+");
         } else if (digit == 45) { // -
-            Xil_Out32(XPAR_CALCULATORCONTROL_0_BASEADDR+8, 0x00000003);
+            data = 0;
+            Xil_Out32(REG2, 0x00000003);
             xil_printf("-");
         } else if (digit == 42) { // *
-            Xil_Out32(XPAR_CALCULATORCONTROL_0_BASEADDR+8, 0x00000004);
+            data = 0;
+            Xil_Out32(REG2, 0x00000004);
             xil_printf("*");
         } else if (digit == 47) { // /
-            Xil_Out32(XPAR_CALCULATORCONTROL_0_BASEADDR+8, 0x00000005);
+            data = 0;
+            Xil_Out32(REG2, 0x00000005);
             xil_printf("/");
         } else if (digit == 27) { // ESC
-            Xil_Out32(XPAR_CALCULATORCONTROL_0_BASEADDR+8, 0x00000006);
-            Xil_Out32(XPAR_CALCULATORCONTROL_0_BASEADDR+4, 0x00000000);
+            data = 0;
+            Xil_Out32(REG2, 0x00000006);
+            Xil_Out32(REG1, data);
             xil_printf("---- ESC ---- \n\r");
         }
     }
