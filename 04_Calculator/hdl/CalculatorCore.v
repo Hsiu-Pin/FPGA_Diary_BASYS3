@@ -48,7 +48,7 @@ always@*begin
         IDLE: begin
             if     (operation == ENTER) cal_state_n = IDLE;
             else if(operation == ESC)   cal_state_n = IDLE;
-            else                        cal_state_n = WAIT;
+            else if(operation != 3'd0)  cal_state_n = WAIT;
         end
         WAIT: begin
             if     (operation == ENTER) cal_state_n = CALC;
