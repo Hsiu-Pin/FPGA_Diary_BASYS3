@@ -10,7 +10,7 @@
 #include "xil_types.h"
 #include "xil_io.h"
 
-#define DEG XPAR_DEGREE_BASEADDR
+#define DEG XPAR_SERVOCONTROL_WRAP_0_BASEADDR
 
 u32 deg;
 
