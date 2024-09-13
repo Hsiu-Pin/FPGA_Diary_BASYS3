@@ -1,4 +1,3 @@
-module bt_RxDecoder(
 /******************************************************************************
 * Author: Hsiu-Pin Hsu
 * Date: 2024.09.13 (Cambridge)
@@ -13,6 +12,7 @@ module bt_RxDecoder(
 *   - Stop   bit: 1-bit
 ******************************************************************************/
 
+module UART_RxDecoder(
     input            clk_10Hz, // 10 MHz clock (period = 100 ns)
     input            reset,    // Active-low reset signal
     input            rx_bit,   // 1-bit serial UART input
